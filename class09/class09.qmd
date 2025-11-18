@@ -1,0 +1,143 @@
+---
+title: "Class 09: Structural Bioinformatics (pt1)"
+author: "Berne Chu (18608434)"
+format: html
+toc: TRUE
+---
+
+The main database for structural biology is called the PDB. Let's have a look at what it contains:
+
+Download a CSV file from the PDB site (accessible from "Analyze" > "PDB Statistics" > "by Experimental Methods and Molecular Type".)
+
+> Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
+
+```{r}
+stats <- read.csv("Data Export Summary.csv")
+stats
+```
+
+```{r}
+stats$Total
+```
+
+These are characters not numeric...
+
+```{r}
+as.numeric(sub(",", "", stats$Total))
+```
+
+```{r pdbstats, message=FALSE}
+library(readr)
+
+stats <- read_csv("Data Export Summary.csv")
+stats
+```
+
+```{r}
+n.total <- sum(stats$Total)
+n.total
+```
+
+```{r}
+n.xray <- sum(stats$`X-ray`)
+n.em <- sum(stats$EM)
+
+percent.xray <- (n.xray)/n.total*100
+percent.xray
+percent.em <- (n.em)/n.total*100
+percent.em
+```
+
+There are `r round(percent.xray, 2)` percent Xray structures in the PDB and there are `r round(percent.em, 2)` percent Electron Microscopy structures in the PDB.
+
+> Q2: What proportion of structures in the PDB are protein?
+
+```{r}
+round(stats$Total[1]/n.total*100,2)
+```
+
+## Exploring PDB structures
+
+Package for structural bioinformatics
+
+```{r}
+library(bio3d)
+
+hiv <- read.pdb("1hsg")
+hiv
+```
+
+Let's first use the Mol* viewer to explore the structure.
+
+![My first view of HIV-Pr](1HSG.png)
+
+And a view of the ligand (ball and stick) with catalytic ASP 25 amino-acids (spacefill) and the all important active site water molecule (spacefill):
+
+![](1HSG2.png)
+
+## PDB object in R
+
+```{r}
+head(hiv$atom)
+```
+
+Extract the sequence
+
+```{r}
+pdbseq(hiv)
+```
+
+```{r}
+chainA_seq <- pdbseq(trim.pdb(hiv, chain="A"))
+```
+
+I can interactively view these PDB objects in R with the new **bio3dview** package. This is not yet on CRAN
+
+To install this I can setup **pak** package and use it to install **bio3dview** from GitHub. In my console I first run
+
+install.package("pak")
+
+```{r}
+library(bio3dview)
+
+view.pdb(hiv)
+```
+
+Change some settings
+
+```{r}
+sel <- atom.select(hiv,resno=25)
+
+view.pdb(hiv, highlight = sel,
+         highlight.style = "spacefill",
+         colorScheme="chain", 
+         col=c("blue","orange"),
+         backgroundColor = "pink")
+```
+
+## Predict protein flexibility
+
+We can run a bioinformatics calculation to predict protein dynamics - i.e. functional motions.
+
+We will use the `nma()` function:
+
+```{r}
+adk <- read.pdb("6s36")
+adk
+```
+
+```{r}
+m <- nma(adk)
+plot(m)
+```
+
+Generate a "trajectory" of predicted motion
+
+```{r}
+mktrj(m, file="ADK_nma.pdb")
+```
+
+```{r}
+view.nma(m)
+```
+
