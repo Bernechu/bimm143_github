@@ -1,0 +1,198 @@
+---
+title: "Class 5: Data Viz with ggplot"
+author: "Berne Chu (A18608434)"
+format: pdf
+---
+
+Today we are exploring the **ggplot** package and how to make nice figures in R.
+
+There are lots of ways to make figures and plot in R. These include:
+
+- so called "base" R
+- and add on packages like **ggplots2**
+
+Here is a simple "base" R plots.
+
+```{r}
+head(cars)
+```
+
+We can simply pass to the `plot()` function.
+
+```{r}
+plot(cars)
+```
+
+> Key-point: Base R is quick but not so nice looking.
+
+Let's see how we can plot this with **ggplot2**...
+
+1st I need to install this add-on package. For this we use the `install.package()` function - **We DO THIS IN THE CONSOLE, NOT our report**. This is a on time only deal.
+
+2nd We need to load the package with `library()` function every time we want to use it.
+
+
+```{r}
+library(ggplot2)
+ggplot(cars)
+```
+
+Every ggplot is composed of at least 2 layers:
+
+- **data** (i.e a data.frame with the things to plot),
+- aesthitics **aes()** that map the colums of data to the plot features (i.e aesthitics)
+- geoms like **geom_point()** that srt how the plot appears
+
+```{r}
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point()
+```
+
+> Key point: For simple "canned" graphs base R is quicker but as things get more custom and elobrate then ggplot wins out...
+
+Let's add more layers to our ggplot
+
+Add a line showing the relationship between x and y
+Add a title
+Add custom axis labs "Speed(MPH)" and Distance(ft)"
+Change the theme...
+
+```{r}
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(title="Silly plot of Speed vs Stoping distance", x = "Speed (MPH)", 
+       y = "Distance (ft)")+
+  theme_bw()
+``` 
+
+## Going further
+
+Read some gene expression data
+
+```{r}
+url <- 
+  "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+
+> Q1. How many genes are in this wee dataset?
+
+```{r}
+nrow(genes)
+```
+```{r}
+ncol(genes)
+```
+
+> Q2. How many "up" regulated genes are there?
+
+```{r}
+sum(genes$State == "up")
+```
+
+A useful function for counting up occurances of things in a vector is the `table()` function.
+
+```{r}
+table(genes$State)
+```
+Make a v1 figure
+
+```{r}
+p <- ggplot(genes)+
+  aes(x=Condition1, y=Condition2, col=State)+
+  geom_point()
+
+p
+```
+
+```{r}
+p +
+  scale_colour_manual(values=c("red", "yellow", "purple"))+
+  labs(title="Gene expression changes upon drug treatment",x="Control(no dryg)",
+       y="Treatment (with drug)")+
+  theme_bw()
+
+```
+
+## More Plotting 
+
+Reading in the gapmider dataset
+
+```{r}
+# File location online
+url <- 
+  "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+```
+
+Lets have a wee peak
+
+```{r}
+head(gapminder, 3)
+```
+
+```{r}
+tail(gapminder, 3)
+```
+
+> Q4. How many different country values are in the dataset?
+
+```{r}
+nrow(gapminder)
+```
+```{r}
+length(table(gapminder$country))
+```
+
+> Q5. How many different continent calues are in this dataset
+
+```{r}
+unique(gapminder$continent)
+```
+```{r}
+ggplot(gapminder) +
+  aes(gdpPercap, lifeExp, col=continent) +
+  geom_point()
+```
+
+```{r}
+ggplot(gapminder) +
+  aes(gdpPercap, lifeExp, col=continent, label=country) +
+  geom_text()
+```
+
+I can use the **ggrepel** package to make more sensible labels here.
+
+```{r}
+library(ggrepel)
+ggplot(gapminder) +
+  aes(gdpPercap, lifeExp, col=continent, label=country) +
+  geom_point()+
+  geom_text_repel()
+```
+
+I want to seperate pannel per continent
+
+```{r}
+library(ggrepel)
+ggplot(gapminder) +
+  aes(gdpPercap, lifeExp, col=continent, label=country) +
+  geom_point()+
+  geom_text_repel()+
+  facet_wrap(~continent)
+```
+
+## Summary
+
+ggplot2 offers several main advantages over base R plotting:
+
+1. Layered grammar: ggplot2 builds plots by adding layers (data, aesthetics, geoms, themes) in a consistent, stepwise fashion, making complex plots easier to construct and modify[[1]](https://drive.google.com/file/d/1BYSWJLROqxA1YpuDhJkzUolhiZqiOOKg/view?usp=drivesdk), [[2]](https://drive.google.com/file/d/1tFqKg9_nhVMmKYfiM1CQKDS2PmPwLh8n/view?usp=drivesdk), [[3]](https://drive.google.com/file/d/1Clw2_EJ_hY3USNwObiPnxpIQIfirxfW0/view?usp=drivesdk), [[5]](https://drive.google.com/file/d/15xXaaIcCWOc_x1gJLdySWOd_sfMXTiaw/view?usp=drivesdk), [[4]](https://drive.google.com/file/d/1FDBbIi2Rlw2In9mClB7Mub8oUPgx6y8h/view?usp=drivesdk).
+2. Declarative syntax: You specify what you want to see (mapping data to aesthetics), rather than how to draw each element, which simplifies code and improves readability[[1]](https://drive.google.com/file/d/1BYSWJLROqxA1YpuDhJkzUolhiZqiOOKg/view?usp=drivesdk), [[2]](https://drive.google.com/file/d/1tFqKg9_nhVMmKYfiM1CQKDS2PmPwLh8n/view?usp=drivesdk), [[3]](https://drive.google.com/file/d/1Clw2_EJ_hY3USNwObiPnxpIQIfirxfW0/view?usp=drivesdk), [[5]](https://drive.google.com/file/d/15xXaaIcCWOc_x1gJLdySWOd_sfMXTiaw/view?usp=drivesdk), [[4]](https://drive.google.com/file/d/1FDBbIi2Rlw2In9mClB7Mub8oUPgx6y8h/view?usp=drivesdk).
+3. Publication-quality output: ggplot2 produces attractive, professional figures by default, with sensible color schemes, legends, and layouts[[1]](https://drive.google.com/file/d/1BYSWJLROqxA1YpuDhJkzUolhiZqiOOKg/view?usp=drivesdk), [[2]](https://drive.google.com/file/d/1tFqKg9_nhVMmKYfiM1CQKDS2PmPwLh8n/view?usp=drivesdk), [[3]](https://drive.google.com/file/d/1Clw2_EJ_hY3USNwObiPnxpIQIfirxfW0/view?usp=drivesdk).
+4. Customization: It is easier to customize and extend plots (e.g., adding color, labels, themes) compared to base R, which often requires more manual tweaking[[1]](https://drive.google.com/file/d/1BYSWJLROqxA1YpuDhJkzUolhiZqiOOKg/view?usp=drivesdk), [[2]](https://drive.google.com/file/d/1tFqKg9_nhVMmKYfiM1CQKDS2PmPwLh8n/view?usp=drivesdk), [[3]](https://drive.google.com/file/d/1Clw2_EJ_hY3USNwObiPnxpIQIfirxfW0/view?usp=drivesdk), [[5]](https://drive.google.com/file/d/15xXaaIcCWOc_x1gJLdySWOd_sfMXTiaw/view?usp=drivesdk).
+5. Consistency: The same grammar applies to all plot types, reducing the need to learn different functions for each plot style[[1]](https://drive.google.com/file/d/1BYSWJLROqxA1YpuDhJkzUolhiZqiOOKg/view?usp=drivesdk), [[2]](https://drive.google.com/file/d/1tFqKg9_nhVMmKYfiM1CQKDS2PmPwLh8n/view?usp=drivesdk), [[3]](https://drive.google.com/file/d/1Clw2_EJ_hY3USNwObiPnxpIQIfirxfW0/view?usp=drivesdk), [[5]](https://drive.google.com/file/d/15xXaaIcCWOc_x1gJLdySWOd_sfMXTiaw/view?usp=drivesdk).
