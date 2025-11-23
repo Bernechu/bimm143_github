@@ -1,0 +1,26 @@
+This is a simple nano text editor that will be available on every unix 
+machine - that is why I am showing it to you.
+
+pwd:    print working dir (where I am)
+cd:     change working directory (move around the file system)
+ls:     list out files and dirs
+mkdir:  make a new dir (a.k.a. "folder")
+rm:     remove files and folders (i.e. delete)
+nano:   a basix text editor
+
+head:   show the top lines of a file
+tail:   show the bottom lines of a file
+cp:     copy files or dirs
+mv:     move or rename a file or dir
+
+1. Open an SSH client.
+2. Locate your private key file. The key used to launch this instance is 
+keyberne.pem
+3. Run this command, if necessary, to ensure your key is not publicly viewable.
+chmod 400 ~/Downloads/keyberne.pem
+4. Connect to your instance using its Public DNS:
+ssh -i ~/Downloads/keyberne.pem ubuntu@ec2-16-146-121-172.us-west-2.compute.amazonaws.com
+
+To copy remote rsults file:
+scp -i ~/Downloads/keyberne.pem ubuntu@ec2-16-146-121-172.us-west-2.compute.amazonaws.com:~/work/my_results.tsv .
+

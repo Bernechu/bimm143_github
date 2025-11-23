@@ -1,0 +1,65 @@
+---
+title: "Class 16"
+author: "Berne Chu (A18608434)"
+format: pdf
+---
+## PCA on BLAST results
+
+Import tsv with my results
+
+```{r}
+library(readr)
+results <- read_tsv("my_results.tsv")
+head(results)
+```
+
+Set colnames
+
+```{r}
+colnames(results) <- c("qseqid", "sseqid", "pident", "length", "mismatch",
+                       "gapopen", "qstart", "qend", "sstart", "send",
+                       "evalue", "bitscore")
+head(results)
+```
+
+**PCA plots**
+
+PCA using `prcomp()`
+
+```{r}
+pca <- prcomp(results[, c("pident", "length", "mismatch", "gapopen", "evalue",
+                          "bitscore")], scale. = TRUE)
+summary(pca)
+```
+
+PC1 vs PC2
+
+```{r}
+library(ggplot2)
+ggplot(pca$x, aes(x = PC1, y = PC2)) +
+  geom_point() +
+  ggtitle("PCA: PC1 vs PC2") +
+  xlab("Principal Component 1") +
+  ylab("Principal Component 2")
+```
+
+PC1 vs PC3
+
+```{r}
+ggplot(pca$x, aes(x = PC1, y = PC3)) +
+  geom_point() +
+  ggtitle("PCA: PC1 vs PC3") +
+  xlab("Principal Component 1") +
+  ylab("Principal Component 3")
+```
+
+PC2 vs PC3
+
+```{r}
+ggplot(pca$x, aes(x = PC2, y = PC3)) +
+  geom_point() +
+  ggtitle("PCA: PC2 vs PC3") +
+  xlab("Principal Component 2") +
+  ylab("Principal Component 3")
+```
+
