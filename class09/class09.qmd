@@ -100,19 +100,19 @@ install.package("pak")
 ```{r}
 library(bio3dview)
 
-view.pdb(hiv)
+#view.pdb(hiv)
 ```
 
 Change some settings
 
 ```{r}
-sel <- atom.select(hiv,resno=25)
+#sel <- atom.select(hiv,resno=25)
 
-view.pdb(hiv, highlight = sel,
-         highlight.style = "spacefill",
-         colorScheme="chain", 
-         col=c("blue","orange"),
-         backgroundColor = "pink")
+#view.pdb(hiv, highlight = sel,
+         #highlight.style = "spacefill",
+         #colorScheme="chain", 
+         #col=c("blue","orange"),
+         #backgroundColor = "pink")
 ```
 
 ## Predict protein flexibility
@@ -134,10 +134,10 @@ plot(m)
 Generate a "trajectory" of predicted motion
 
 ```{r}
-mktrj(m, file="ADK_nma.pdb")
+#mktrj(m, file="ADK_nma.pdb")
 ```
 
 ```{r}
-view.nma(m)
+#view.nma(m)
 ```
 
