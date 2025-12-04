@@ -1,0 +1,24 @@
+---
+title: "class 17"
+author: "Berne Chu (A18608434)"
+format: html
+---
+
+## Section 1. Proportion og G/G in a population
+
+Read CSV file downloaded from emsembl
+
+```{r}
+mxl <- read.csv("class17data.csv")
+head(mxl)
+```
+
+```{r}
+mxl$Genotype <- as.factor(mxl$Genotype)
+table(mxl$Genotype)
+```
+
+```{r}
+table(mxl$Genotype) / nrow(mxl) * 100
+```
+
