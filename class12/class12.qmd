@@ -1,5 +1,5 @@
 ---
-title: "Class 12: RNASeq analysis"
+title: "Class 12: RNASeq Analysis"
 author: "Berne Chu (A18608434)"
 format: pdf
 toc: TRUE
