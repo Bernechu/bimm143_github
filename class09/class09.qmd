@@ -1,7 +1,7 @@
 ---
 title: "Class 09: Structural Bioinformatics (pt1)"
 author: "Berne Chu (18608434)"
-format: html
+format: gfm
 toc: TRUE
 ---
 
