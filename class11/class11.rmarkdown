@@ -127,3 +127,4 @@ con <- consensus(aln,cutoff=0.9)
 con$seq
 ```
 
+
